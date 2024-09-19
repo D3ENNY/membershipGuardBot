@@ -1,7 +1,7 @@
 from pyrogram import Client, filters, emoji
 from pyrogram.types import InlineKeyboardButton as keybutton
 from pyrogram.types import InlineKeyboardMarkup as keymarkup
-from pyrogram.errors import PeerIdInvalid, FloodWait
+from pyrogram.errors import PeerIdInvalid, FloodWait, UserNotParticipant, ChatAdminRequired
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from jsoncomment import JsonComment
 
@@ -65,12 +65,29 @@ async def get_group_link(chat_id):
     args: 
         chat_id (str): the group id
     '''
-    if check_group_exist(chat_id):
+    if await check_group_exist(chat_id):
         invite = await app.create_chat_invite_link(chat_id)
+        print(invite)
         return invite.invite_link
+    print("fuck")
     
 async def is_user_in_group(chat_id, user_id):
+    '''
+    function that check if the user is in a specific group, based on group and user id
     
+    args:
+        chat_id (str): the group id
+        user_id (str): the user id
+    '''
+    try:
+        member = await app.get_chat_member(chat_id, user_id)
+        if member.status in ["member", "administrator", "creator"]:
+            return True
+        return False
+    except UserNotParticipant as e:
+        return False
+    except ChatAdminRequired as e:
+        log(str(e), traceback.format_exc(), logging.WARN)
 
 def log(error, stacktrace, level):
     '''
@@ -98,9 +115,12 @@ def log(error, stacktrace, level):
 async def start(bot, message):
     print("--start--")
     try:
+        for j,i in group_access_rules["groups"].items():
+            print(i)
+            print(j)
         await message.reply(
             text=msg["message"]["caption"]["enter_groups"] % (emoji.BACKHAND_INDEX_POINTING_DOWN),
-            reply_markup=keymarkup([[keybutton(i["name"],url=await get_group_link(i["id"]))] for i in group_access_rules["groups"]["required"]]),
+            reply_markup=keymarkup([[keybutton(i["name"], url=await get_group_link(i["id"]) if group_name == "required" else "https://example.com")] for group_name, group in group_access_rules["groups"].items() for i in group]),
             disable_web_page_preview = True
         )
     except Exception as e:
