@@ -46,16 +46,17 @@ async def check_group_exist(chat_id):
         chat_id (str): the group id
         
     '''
-    try:
-        app.get_chat(chat_id)
-        return true
+    try:    
+        await app.get_chat(chat_id)
+        return True
     except PeerIdInvalid:
         return False
     except FloodWait as e:
-        # rate limiting from Telegram API
+        # Rate limiting from Telegram API
         await asyncio.sleep(e.x)
-        return await check_group_exists(chat_id)
+        return await check_group_exist(chat_id)
     except Exception as e:
+        print(f"Errore durante il controllo del gruppo: {e}")
         return False
 
 async def get_group_link(chat_id):
@@ -65,11 +66,16 @@ async def get_group_link(chat_id):
     args: 
         chat_id (str): the group id
     '''
-    if await check_group_exist(chat_id):
-        invite = await app.create_chat_invite_link(chat_id)
-        print(invite)
-        return invite.invite_link
-    print("fuck")
+    try:
+        flag = await check_group_exist(chat_id)  # Assicurati di usare await qui
+        
+        if flag:
+            invite = await app.create_chat_invite_link(chat_id)  # Metodo corretto per ottenere il link
+            return invite.invite_link if invite else None
+        return None
+    except Exception as e:
+        log(str(e), traceback.format_exc(), logging.ERROR)
+        return None
     
 async def is_user_in_group(chat_id, user_id):
     '''
@@ -115,12 +121,9 @@ def log(error, stacktrace, level):
 async def start(bot, message):
     print("--start--")
     try:
-        for j,i in group_access_rules["groups"].items():
-            print(i)
-            print(j)
         await message.reply(
             text=msg["message"]["caption"]["enter_groups"] % (emoji.BACKHAND_INDEX_POINTING_DOWN),
-            reply_markup=keymarkup([[keybutton(i["name"], url=await get_group_link(i["id"]) if group_name == "required" else "https://example.com")] for group_name, group in group_access_rules["groups"].items() for i in group]),
+            reply_markup=keymarkup([[keybutton(i["name"], url=await get_group_link(i["id"]) if item == "required" else "https://example.com")] for item, group in group_access_rules["groups"].items() for i in group]),
             disable_web_page_preview = True
         )
     except Exception as e:
