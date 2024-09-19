@@ -1,6 +1,6 @@
 {
     "telegram":{
-        "name" : "Fil_Bot",
+        "name" : "membershipGuardBot",
         "api_id" : 18121640,
         "api_hash" : "586ab19953703193dd8d7ad44ea4f3cb",
         "bot_token" : "7036470678:AAG9A1tvXmzZCa0cJ_cNtNVjqnZlVHdHG74"
