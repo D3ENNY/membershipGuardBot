@@ -1,0 +1,12 @@
+{
+    "message" : {
+        "error" : {
+            "invalid_url_error": "⚠️ invalid Url"
+        }
+        , 
+        "caption" : {
+            "enter_groups": "per entrare nel gruppo è necessario seguire tutti i canali sottostanti %s",
+            "ping": "pong %s"
+        }
+    }
+}
