@@ -1,0 +1,28 @@
+// {
+//     "groups": {
+//         "required": [
+//             {"name": "STI", "id": -1001178411514},
+//             {"name": "DMF STOCK", "id": -1002097149293},
+//             {"name": "GOD", "id": -1001438324381},
+//             {"name": "CARDMATE_EMPIRE", "id": -1001438324381}
+//         ], 
+//         "target": [
+//             {"name": "ALL SPORT LIVE", "id": -1002354644566}
+//         ]
+//     },
+    
+//     "log": {
+//         "id": -1234567890
+//     }
+// }
+
+{
+    "groups" : {
+        "required": [
+            {"name": "test group", "id": -4502196175}
+        ], 
+        "target": [
+            {"name": "test channel", "id": -1002264277246}
+        ]
+    }
+}
