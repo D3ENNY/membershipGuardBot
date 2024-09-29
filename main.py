@@ -123,7 +123,18 @@ async def start(bot, message):
     try:
         await message.reply(
             text=msg["message"]["caption"]["enter_groups"] % (emoji.BACKHAND_INDEX_POINTING_DOWN),
-            reply_markup=keymarkup([[keybutton(i["name"], url=await get_group_link(i["id"]) if item == "required" else "https://example.com")] for item, group in group_access_rules["groups"].items() for i in group]),
+            reply_markup=keymarkup(
+                [
+                    [
+                        keybutton(
+                            i["name"], 
+                            url=await get_group_link(i["id"]) if item == "required" 
+                                else 
+                            "https://example.com"
+                            )
+                        ] for item, group in group_access_rules["groups"].items() for i in group
+                    ]
+                ),
             disable_web_page_preview = True
         )
     except Exception as e:
