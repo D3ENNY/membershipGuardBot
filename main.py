@@ -128,13 +128,11 @@ async def start(bot, message):
                     [
                         keybutton(
                             i["name"], 
-                            url=await get_group_link(i["id"]) if item == "required" 
-                                else 
-                            "https://example.com"
-                            )
-                        ] for item, group in group_access_rules["groups"].items() for i in group
-                    ]
-                ),
+                            **({"url": await get_group_link(i["id"])} if item == "required" else {})
+                        )
+                    ] for item, group in group_access_rules["groups"].items() for i in group
+                ]
+            ),
             disable_web_page_preview = True
         )
     except Exception as e:
