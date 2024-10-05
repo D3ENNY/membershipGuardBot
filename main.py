@@ -71,6 +71,7 @@ async def get_group_link(chat_id):
         
         if flag:
             invite = await app.create_chat_invite_link(chat_id)  # Metodo corretto per ottenere il link
+
             return invite.invite_link if invite else None
         return None
     except Exception as e:
@@ -118,7 +119,7 @@ def log(error, stacktrace, level):
 #bot function
 
 @app.on_message(filters.command("start", prefixes=['!', '.', '&', '/']) & filters.text)
-async def start(bot, message):
+async def start1(bot, message):
     print("--start--")
     try:
         await message.reply(
@@ -128,7 +129,7 @@ async def start(bot, message):
                     [
                         keybutton(
                             i["name"], 
-                            **({"url": await get_group_link(i["id"])} if item == "required" else {})
+                            **({"url": link} if item == "required" and (link := await get_group_link(i["id"])) else {})
                         )
                     ] for item, group in group_access_rules["groups"].items() for i in group
                 ]
